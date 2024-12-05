@@ -1,0 +1,23 @@
+#include<stdio.h>
+#include<stdlib>
+#include<srting.h>
+typedef struct AVLcsv{
+    int type;    // 1=HV_B 2=HV_A 3=LV
+    int id; // num id
+    int capacity;
+    int consomation;
+    struct AVLcsv* filsG;
+    struct AVLcsv* filsD;
+}
+
+sort()
+
+
+int main(int argc,argv[1],char*argv[]){
+    FILE* entre=NULL;
+    FILE* sortie=NULL;
+    entre=fopen("argv[1]", "-r")
+    sort(argv[1],argv[2],argv[3],arg[4]);  //argv1= nom du fichier argv2=num_centrale argv3=type argv4=consomateur
+    
+return 0;
+}
