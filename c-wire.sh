@@ -66,15 +66,22 @@ else
 	type_station=$3
 	consomateur_type=$4
 	id_centrale=-1
+
+	#verif tmp
+	if [ -e tmp.dat ];
+	then
+		`rm tmp.dat`
+	fi
+	`touch tmp.dat`
 	
-	##prb si le tableau n'est pas trier (ne pas utiliser tail) + prb d'affichage
-	test= tail -1 $1 | cut -d";" -f1
-	if (( $# == 4 )) && [ $4 <= test ];
+	#verif ID
+	test=`sed "1,1d" $1 | sort | tail -1 | cut -d";" -f1`
+	if (( $# == 4 )) && (( $4 <= $test )) ;
 	then
 		id_centrale=$4
-	elif (( $# == 4 )) && [ $4 > test ] ;
+	elif (( $# == 4 )) && (( $4 > $test )) ;
 	then
-		echo "error: incompatiblme Id (<$test)"
+		echo "error: incompatiblme Id (< $test)"
 		a=1
 	fi
 
@@ -93,14 +100,6 @@ else
 #		a=1
 #		echo "error: compilation failed"
 #	fi
-
-	#verif tmp
-##changer l'extension de tmp?
-	if [ -e tmp.csv ];
-	then
-		`rm tmp.csv`
-	fi
-	`touch tmp.csv`
 
 	#graphs
 ##a voir l'extension du graphe.???
@@ -123,17 +122,18 @@ else
 	fi
 	
 ##init time
+
 	#traitement des données
 	if (( id_centrale != -1  )) ;
 	then
-	    	#supprimer les ligne des mauvaise centrale.
+		#supprimer les ligne des mauvaise centrale.
+	    	`grep "^$id_centrale;"*";"*";"*";"*";"*";"*";"* $1 > tmp.dat`
+	    	
 	fi
 	#suprimmer lignes en fonction de HVB HVB LV comp indiv
 	#supprimer colomnes 2/3.
 	
-	#
+
 ##graphs
 ##fichier result
 fi
-
-
