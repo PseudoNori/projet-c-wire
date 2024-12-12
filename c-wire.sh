@@ -65,6 +65,7 @@ else
 	chemin_tab=$2
 	type_station=$3
 	consomateur_type=$4
+	id_centrale=-1
 	
 	##prb si le tableau n'est pas trier (ne pas utiliser tail) + prb d'affichage
 	test= tail -1 $1 | cut -d";" -f1
@@ -93,10 +94,20 @@ else
 #		echo "error: compilation failed"
 #	fi
 
-	#verif tmp and graphs
-	if [ ! -e tmp.csv ];
+	#verif tmp
+##changer l'extension de tmp?
+	if [ -e tmp.csv ];
 	then
-		` `
+		`rm tmp.csv`
+	fi
+	`touch tmp.csv`
+
+	#graphs
+##a voir l'extension du graphe.???
+	if [ ! -e graphs.??? ];
+	then
+		a=1
+		echo "error: graphs file doesn't exist"
 	fi
 	
 	#help
@@ -110,9 +121,19 @@ else
 	    	fi
 	    	kill $$
 	fi
-#######################
-
-#######################	
+	
+##init time
+	#traitement des données
+	if (( id_centrale != -1  )) ;
+	then
+	    	#supprimer les ligne des mauvaise centrale.
+	fi
+	#suprimmer lignes en fonction de HVB HVB LV comp indiv
+	#supprimer colomnes 2/3.
+	
+	#
+##graphs
+##fichier result
 fi
 
 
