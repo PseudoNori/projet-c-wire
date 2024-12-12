@@ -1,6 +1,6 @@
 #!/bin/bash
 nb_args=$#
-if (( $# >= 5 )) ;
+if (( $# > 5 )) ;
 then
 	echo "error: too few argument"
 	kill $$
@@ -24,49 +24,95 @@ else
 		a=1
 		echo "error: argument missing"
 	fi
-	#check argument
+
+	##check argument
+	#verif file
 	if [ ! -e $1  ] ;
 	then
 		a=1
 		echo "error: file missing -> $1"
 	fi
-###### verif l'éxtension du fichier!
-	if [ ! -e $1  ] ;
+
+	#verif file extension
+	if [ ${1##*.} != "dat" ] && [ ${1##*.} != "csv" ] ;
 	then
 		a=1
-		echo "error: file missing"
+		echo "error: file extension"
 	fi
-########
-	if [ $2 != "hvb" ] || [ $2 != "hva" ] || [ $2 != "lv" ] ;
+
+	#verif station type
+	if [ $2 != "hvb" ] && [ $2 != "hva" ] && [ $2 != "lv" ] ;
 	then
 		a=1
 		echo "error: station type, (hvb hva lv)"
+		echo $2
 	fi
-	if [ $3 != "comp" ] || [ $3 != "indiv" ] || [ $3 != "all" ] ;
+
+	#verif consumer type
+	if [ $3 != "comp" ] && [ $3 != "indiv" ] && [ $3 != "all" ] ;
 	then
 		a=1
 		echo "error: consumer type, (comp indiv all)"
 	fi
-	
-	chemin_tab=$1
-	type_station=$2
-	consomateur_type=$3
 
-##prb si le tableau n'est pas trier ( ne pas utiliser tail)
+	#verif argument combinaison
+	if ( [ $2 == "hvb" ] && ( [ $3 == "all" ] || [ $3 == "indiv" ] )) || ( [ $2 == "hva" ] && ( [ $3 = "all" ] || [ $3 == "indiv" ] )) ;
+	then
+		a=1
+		echo "error: argument combinaison, (hvb + all/ hvb + indiv / hva + all/ hva + indiv)"
+	fi
+
+	chemin_tab=$2
+	type_station=$3
+	consomateur_type=$4
+	
+	##prb si le tableau n'est pas trier (ne pas utiliser tail) + prb d'affichage
 	test= tail -1 $1 | cut -d";" -f1
 	if (( $# == 4 )) && [ $4 <= test ];
 	then
 		id_centrale=$4
-	else
-		echo "error: incompatoblme Id (<$test)"
+	elif (( $# == 4 )) && [ $4 > test ] ;
+	then
+		echo "error: incompatiblme Id (<$test)"
 		a=1
 	fi
+
+	#verif executable c
+#	if [ ! -e c-wire-exe ] && [ -e main.c ];
+#	then
+#		echo "main.c compilation"
+#		`make`
+#	elif [ -e main.c ] ;
+#	then
+#		a=1
+#		echo "error: main.c doesn't exist"
+#	fi
+#	if [ ! -e c-wire-exe ];
+#	then
+#		a=1
+#		echo "error: compilation failed"
+#	fi
+
+	#verif tmp and graphs
+	if [ ! -e tmp.csv ];
+	then
+		` `
+	fi
 	
+	#help
 	if (( $a == 1 )) ;
 	then
-		kill $$
+	    	if [ -e fichier_shell/help.txt ] ;
+	    	then
+	    		cat fichier_shell/help.txt
+	    	else
+	    		echo "error: file missing -> help.txt"
+	    	fi
+	    	kill $$
 	fi
-fi
+#######################
 
+#######################	
+fi
 
 
