@@ -68,11 +68,11 @@ else
 	id_centrale=-1
 
 	#verif tmp
-	if [ -e tmp.dat ];
+	if [ -e tmp ];
 	then
-		`rm tmp.dat`
+		`rm -r tmp`
 	fi
-	`touch tmp.dat`
+	`mkdir tmp`
 	
 	#verif ID
 	test=`sed "1,1d" $1 | sort | tail -1 | cut -d";" -f1`
@@ -102,8 +102,7 @@ else
 #	fi
 
 	#graphs
-##a voir l'extension du graphe.???
-	if [ ! -e graphs.??? ];
+	if [ ! -e graphs ];
 	then
 		a=1
 		echo "error: graphs file doesn't exist"
@@ -123,14 +122,34 @@ else
 	
 ##init time
 
-	#traitement des données
+
+	`touch tmp/tab.dat`
+
+	#data processing
 	if (( id_centrale != -1  )) ;
 	then
-		#supprimer les ligne des mauvaise centrale.
-	    	`grep "^$id_centrale;"*";"*";"*";"*";"*";"*";"* $1 > tmp.dat`
-	    	
+		#delete bad central lines.
+	    	`grep "^$id_centrale;.*;.*;.*;.*;.*;.*;.*" tmp/tab.dat > tmp/tmp.dat`	
 	fi
-	#suprimmer lignes en fonction de HVB HVB LV comp indiv
+##
+	#delete lines based on HVB HVA LV comp indiv
+	if [ type_station != "hvb" ] ;
+	then
+		#`grep -v "^.*;-;.*;.*;.*;.*;.*;.*" tmp/tab.dat > tmp/tmp.dat`
+		#`mv tmp/tmp.dat tmp/tab.dat`
+	fi	
+	if [ type_station != "hva" ] ;
+	then
+		a=0
+	fi
+	if [ type_station != "lv" ] ;
+	then
+		a=0
+	fi
+##
+	####type_station
+	####consomateur_type
+
 	#supprimer colomnes 2/3.
 	
 
