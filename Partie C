@@ -1,23 +1,137 @@
 #include<stdio.h>
-#include<stdlib>
-#include<srting.h>
+#include<stdlib.h>
+#include<string.h>
 typedef struct AVLcsv{
-    int type;    // 1=HV_B 2=HV_A 3=LV
+    //int type;    // 1=HV_B 2=HV_A 3=LV
     int id; // num id
     int capacity;
     int consomation;
     struct AVLcsv* filsG;
     struct AVLcsv* filsD;
+    int height;
+}AVLcsv;
+
+typedef AVLcsv pArbre;
+
+void linebreak(FILE* fichier){
+    while(*fichier != '\n'){
+        fgetc(fichier);
+    }
 }
 
-sort()
+void nextsemicolon(FILE* fichier){
+    fgetc(fichier);
+    while(*fichier!=';'){
+        fgetc(fichier);
+    }
+}
 
+
+
+int extractvalue(FILE* fichier, int cap){
+    fscanf(fichier, %d, cap);
+    return cap;
+}
+
+addAVL(FILE* flux, pArbre a){
+    int capa, cons
+    fgetc(flux);
+    nextsemicolon(flux);
+    nextsemicolon(flux);
+    fscanf(flux, %d,&capa);
+    fscanf(flux,%d, &cons);
+    a->capacity=a->capacity + capa;
+    a->consomation=a->consomation + cons;
+    return a;
+}
+
+pArbre crAvl(int i){
+    pArbre a;
+    a=malloc(sizeof(AVLcsv));
+    a->capacity=0;
+    /*if (a->capacity<=0){
+        exit(1);
+    }*/
+    /*a->type=t;
+    if (a->type<=0 || a->type>=4){
+        exit(1);
+    }*/
+    a->id=i;
+    if (a->id<=0){
+        exit(1);
+    }
+    a->consomation=0;
+    /*if (a->consomation<=0){
+        exit(1);
+    } */
+    a->filsG=NULL;
+    a->filsD=NULL;
+    a->height=1;
+    return a;
+}
+
+sort(FILE* fichier, int typeID,)
+
+pArbre insertAVL(pArbre a, FILE* flux, int i){
+    pArbre avl;
+    if(a==NULL){
+        avl=crAVL(i);
+        avl=addAVL(avl,flux);
+        return avl;
+    }
+}
+/*extract(FILE* entre, int nbcentrale, int t){
+    int cen, int t, int cap, char* typeID, char* typeIDtmp;
+    a=fgetc(fichier);
+    while(a!=nbcentrale){
+        linebreak(fichier);
+        a=fgetc(fichier);
+    }
+    while(a==nbcentrale || ){    
+        for(int i=0, i<t-1, i++){
+            nextsemicolon(fichier);
+        }
+        fscanf(fichier,%d, &typeID);
+        typeIDtmp=typeID;
+        fscanf(fichier, %lf, &cap)
+        linebreak(fichier);
+        while(typeIDtmp==typeID && ){
+            for(int j=0, j<t, j++){
+                nextsemicolon;                  
+            }
+            
+        }
+            case 1:
+                sort()
+                break;
+            case 2:
+                nextsemicolon(fichier);
+                sort;
+                break;
+            case 3:
+                nextsemicolon(fichier);
+                nextsemicolon(fichier);
+                sort;
+                break;
+        }*/
+    }
+}
+
+
+extract(FILE* flux){
+    while(flux !=EOF){
+        }
+        fgetc(flux);
+        insert(a,flux,fgetc(flux));
+
+    }
+}
 
 int main(int argc,argv[1],char*argv[]){
     FILE* entre=NULL;
     FILE* sortie=NULL;
-    entre=fopen("argv[1]", "-r")
-    sort(argv[1],argv[2],argv[3],arg[4]);  //argv1= nom du fichier argv2=num_centrale argv3=type argv4=consomateur
+    entre=fopen("argv[1]", "-r");
+    sort(argv[1],atoi(argv[2]),atoi(argv[3]),atoi(arg[4]));  //argv1= nom du fichier argv2=num_centrale argv3=type argv4=consomateur
     
 return 0;
 }
