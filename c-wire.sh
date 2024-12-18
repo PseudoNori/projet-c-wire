@@ -62,9 +62,9 @@ else
 		echo "error: argument combinaison, (hvb + all/ hvb + indiv / hva + all/ hva + indiv)"
 	fi
 
-	chemin_tab=$2
-	type_station=$3
-	consomateur_type=$4
+	chemin_tab=$1
+	type_station=$2
+	consomateur_type=$3
 	id_centrale=-1
 
 	#verif tmp
@@ -123,30 +123,44 @@ else
 ##init time
 
 
-	`touch tmp/tab.dat`
-
+	`cp $1 tmp/tab.dat`
 	#data processing
-	if (( id_centrale != -1  )) ;
+	if (( id_centrale > -1  )) ;
 	then
 		#delete bad central lines.
-	    	`grep "^$id_centrale;.*;.*;.*;.*;.*;.*;.*" tmp/tab.dat > tmp/tmp.dat`	
+	    	`grep "^$id_centrale;.*;.*;.*;.*;.*;.*;.*" tmp/tab.dat > tmp/tmp.dat`
+	    	`mv tmp/tmp.dat tmp/tab.dat`
 	fi
-##
+	
 	#delete lines based on HVB HVA LV comp indiv
-	if [ type_station != "hvb" ] ;
+	if [ $type_station == "hvb" ] ;
 	then
-		#`grep -v "^.*;-;.*;.*;.*;.*;.*;.*" tmp/tab.dat > tmp/tmp.dat`
-		#`mv tmp/tmp.dat tmp/tab.dat`
-	fi	
-	if [ type_station != "hva" ] ;
+		#hvb
+		`grep -E "^[0-9]+;[0-9]+;-;-;-;-;[0-9]+;-" tmp/tab.dat >> tmp/tmp.dat`
+		#comp connect withs hvb
+		`grep -E "^[0-9]+;[0-9]+;-;-;[0-9]+;-;-;[0-9]+" tmp/tab.dat >> tmp/tmp.dat`
+	elif [ $type_station == "hva" ] ;
 	then
-		a=0
+		#hva
+		`grep -E "^[0-9]+;[0-9]+;[0-9]+;-;-;-;[0-9]+;-" tmp/tab.dat >> tmp/tmp.dat`
+		#comp connect withs hva
+		`grep -E "^[0-9]+;-;[0-9]+;-;[0-9]+;-;-;[0-9]+" tmp/tab.dat >> tmp/tmp.dat`
+	elif [ $type_station == "lv" ] ;
+	then
+		#comp / indiv connect withs lv
+		`grep -E "^[0-9]+;-;[0-9]+;[0-9]+;-;-;[0-9]+;-" tmp/tab.dat >> tmp/tmp.dat`
+
+		if [ $consomateur_type == "all" ] || [ $consomateur_type == "comp" ] ;
+		then
+			`grep -E "^[0-9]+;-;-;[0-9]+;[0-9]+;-;-;[0-9]+" tmp/tab.dat >> tmp/tmp.dat`
+		fi
+		if [ $consomateur_type == "all" ] || [ $consomateur_type == "indiv" ] ;
+		then
+			`grep -E "^[0-9]+;-;-;[0-9]+;-;[0-9]+;-;[0-9]+" tmp/tab.dat >> tmp/tmp.dat`
+		fi
 	fi
-	if [ type_station != "lv" ] ;
-	then
-		a=0
-	fi
-##
+	`mv tmp/tmp.dat tmp/tab.dat`
+
 	####type_station
 	####consomateur_type
 
