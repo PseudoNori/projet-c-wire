@@ -70,9 +70,9 @@ else
 	#verif tmp
 	if [ -e tmp ];
 	then
-		`rm -r tmp`
+		rm -r tmp
 	fi
-	`mkdir tmp`
+	mkdir tmp
 	
 	#verif ID
 	test=`sed "1,1d" $1 | sort | tail -1 | cut -d";" -f1`
@@ -124,68 +124,64 @@ else
 	#init time
 	time_start=$(date +%s)
 
+
+	
 	#data processing
-	`cp $1 tmp/tab.dat`
 	if (( id_centrale > -1  )) ;
 	then
 		#delete bad central lines.
-	    	`grep "^$id_centrale;.*;.*;.*;.*;.*;.*;.*" tmp/tab.dat > tmp/tmp.dat`
-	    	`mv tmp/tmp.dat tmp/tab.dat`
+	    	grep "^$id_centrale;.*;.*;.*;.*;.*;.*;.*" $chemin_tab > tmp/tmp.dat
+	    	mv tmp/tmp.dat tmp/tab.dat
+	    	chemin_tab="tmp/tab.dat"
 	fi
+	
 	
 	#delete lines based on HVB HVA LV comp indiv
 	if [ $type_station == "hvb" ] ;
 	then
 		#hvb
-		`grep -E "^[0-9]+;[0-9]+;-;-;-;-;[0-9]+;-" tmp/tab.dat >> tmp/tmp.dat`
-		#comp connect withs hvb
-		`grep -E "^[0-9]+;[0-9]+;-;-;[0-9]+;-;-;[0-9]+" tmp/tab.dat >> tmp/tmp.dat`
-		`mv tmp/tmp.dat tmp/tab.dat`
-
-		#delete column
-		`more tmp/tab.dat | cut -d";" -f2,5- > tmp/tmp.dat`
-		`mv tmp/tmp.dat tmp/tab.dat`
-		
+		grep -E "^[0-9]+;[0-9]+;-;-;" $chemin_tab | cut -d";" -f2,5- > tmp/tmp.dat
+		mv tmp/tmp.dat tmp/tab.dat
 		
 	elif [ $type_station == "hva" ] ;
 	then
 		#hva
-		`grep -E "^[0-9]+;[0-9]+;[0-9]+;-;-;-;[0-9]+;-" tmp/tab.dat >> tmp/tmp.dat`
-		#comp connect withs hva
-		`grep -E "^[0-9]+;-;[0-9]+;-;[0-9]+;-;-;[0-9]+" tmp/tab.dat >> tmp/tmp.dat`
-		`mv tmp/tmp.dat tmp/tab.dat`
-
-		#delete column
-		`more tmp/tab.dat | cut -d";" -f3,5- > tmp/tmp.dat`
-		`mv tmp/tmp.dat tmp/tab.dat`
+		grep -E "^[0-9]+;[0-9 -]+;[0-9]+;-;" $chemin_tab | cut -d";" -f3,5- > tmp/tmp.dat
+		mv tmp/tmp.dat tmp/tab.dat
+		
 	elif [ $type_station == "lv" ] ;
 	then
 		#lv
-		`grep -E "^[0-9]+;-;[0-9]+;[0-9]+;-;-;[0-9]+;-" tmp/tab.dat >> tmp/tmp.dat`
 		#comp / indiv connect withs lv
-		if [ $consomateur_type == "all" ] || [ $consomateur_type == "comp" ] ;
+		if [ $consomateur_type == "all" ] ;
 		then
-			`grep -E "^[0-9]+;-;-;[0-9]+;[0-9]+;-;-;[0-9]+" tmp/tab.dat >> tmp/tmp.dat`
-		fi
-		if [ $consomateur_type == "all" ] || [ $consomateur_type == "indiv" ] ;
+			grep -E "^[0-9]+;-;[0-9 -]+;[0-9]+;" $chemin_tab | cut -d";" -f4,5- > tmp/tmp.dat
+		elif [ $consomateur_type == "comp" ] ;
 		then
-			`grep -E "^[0-9]+;-;-;[0-9]+;-;[0-9]+;-;[0-9]+" tmp/tab.dat >> tmp/tmp.dat`
+			grep -E "^[0-9]+;-;[0-9 -]+;[0-9]+;" $chemin_tab | grep -E "^[0-9]+;-;[0-9 -]+;[0-9]+;[0-9 -]+;-;" $chemin_tab | cut -d";" -f4,5- > tmp/tmp.dat
+		elif  [ $consomateur_type == "indiv" ] ;
+		then
+			grep -E "^[0-9]+;-;[0-9 -]+;[0-9]+;" $chemin_tab | grep -E "^[0-9]+;-;[0-9 -]+;[0-9]+;-;" $chemin_tab | cut -d";" -f4,5- > tmp/tmp.dat
 		fi
-		`mv tmp/tmp.dat tmp/tab.dat`
-
-		#delete column
-		`more tmp/tab.dat | cut -d";" -f4,5- > tmp/tmp.dat`
-		`mv tmp/tmp.dat tmp/tab.dat`
+		mv tmp/tmp.dat tmp/tab.dat
 	fi
-	`cat tmp/tab.dat | tr "-" "0" > tmp/tmp.dat`
-	`mv tmp/tmp.dat tmp/tab.dat`
+	cat tmp/tab.dat | tr "-" "0" > tmp/tmp.dat
+	mv tmp/tmp.dat tmp/tab.dat
 
 #launche C programme
 	
-	kill $$
 ##graphs
 ##fichier result
-	#time_end=$(date +%s)
-	#res= (( &time_end - $time_start ))
-	#echo "time: $res"
+	time_end=$(date +%s)
+	res=$(( $time_end - $time_start ))
+	echo "time: $res"
 fi
+
+
+
+
+
+
+
+
+
