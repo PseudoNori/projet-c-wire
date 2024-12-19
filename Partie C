@@ -1,6 +1,8 @@
 #include<stdio.h>
 #include<stdlib.h>
 #include<string.h>
+#include<math.h>
+#include<unistd.h>
 typedef struct AVLcsv{
     //int type;    // 1=HV_B 2=HV_A 3=LV
     int id; // num id
@@ -11,41 +13,47 @@ typedef struct AVLcsv{
     int height;
 }AVLcsv;
 
-typedef AVLcsv pArbre;
+typedef AVLcsv* pArbre;
 
-void linebreak(FILE* fichier){
+/*void linebreak(FILE* fichier){
     while(*fichier != '\n'){
         fgetc(fichier);
     }
 }
-
+*/
 void nextsemicolon(FILE* fichier){
     fgetc(fichier);
-    while(*fichier!=';'){
-        fgetc(fichier);
+    while(fgetc(fichier)!=';'){
+       // fgetc(fichier);
     }
 }
 
 
 
-int extractvalue(FILE* fichier, int cap){
+/*int extractvalue(FILE* fichier, int cap){
     fscanf(fichier, %d, cap);
     return cap;
 }
+*/
+int height(pArbre a){
+    if (a == NULL)
+        return 0;
+    return a->height;
+}
 
-addAVL(FILE* flux, pArbre a){
-    int capa, cons
+pArbre addAVL(FILE* flux, pArbre a){
+    int capa, cons;
     fgetc(flux);
     nextsemicolon(flux);
     nextsemicolon(flux);
-    fscanf(flux, %d,&capa);
-    fscanf(flux,%d, &cons);
+    fscanf(flux,"%d",&capa);
+    fscanf(flux,"%d", &cons);
     a->capacity=a->capacity + capa;
     a->consomation=a->consomation + cons;
     return a;
 }
 
-pArbre crAvl(int i){
+pArbre crAVL(int i){
     pArbre a;
     a=malloc(sizeof(AVLcsv));
     a->capacity=0;
@@ -70,15 +78,76 @@ pArbre crAvl(int i){
     return a;
 }
 
-sort(FILE* fichier, int typeID,)
+
+pArbre rightRotate(pArbre a){
+    pArbre p = a->filsG;
+    pArbre c = p->filsD;
+
+    p->filsD = a;
+    a->filsG = c;
+
+    a->height = fmax(height(a->filsG),height(a->filsD)) + 1;
+    p->height = fmax(height(p->filsG),height(p->filsD)) + 1;
+    return p;
+}
+
+
+pArbre leftRotate(pArbre a){
+    pArbre p = a->filsD;
+    pArbre c = p->filsG;
+
+    p->filsG = a;
+    a->filsD = c;
+
+    a->height = fmax(height(a->filsG),height(a->filsD)) + 1;
+    p->height = fmax(height(p->filsG),height(p->filsD)) + 1;
+    return p;
+}
+
+int getBalance(pArbre a){
+    if (a == NULL)
+        return 0;
+    return height(a->filsG) - height(a->filsD);
+}
+
 
 pArbre insertAVL(pArbre a, FILE* flux, int i){
-    pArbre avl;
     if(a==NULL){
-        avl=crAVL(i);
-        avl=addAVL(avl,flux);
-        return avl;
+        a=crAVL(i);
+        a=addAVL(flux, a);
+        return a;
     }
+    if (i < a->id){
+        a->filsG=insertAVL(a->filsG,flux,i);
+    }
+    else if (i > a->id){
+        a->filsD=insertAVL(a->filsD,flux,i);
+    }   
+    else {
+        a=addAVL(flux,a);
+        return a;
+    }
+    a->height = 1 + fmax(height(a->filsG),
+                        height(a->filsD));
+
+    int balance = getBalance(a);
+
+    if (balance > 1 && i < a->filsG->id){
+        return rightRotate(a);
+    }
+    if (balance < -1 && i > a->filsD->id){
+        return leftRotate(a);
+    }
+    if (balance > 1 && i > a->filsG->id){
+        a->filsG =  leftRotate(a->filsG);
+        return rightRotate(a);
+    }
+
+    if (balance < -1 && i < a->filsD->id){
+        a->filsD = rightRotate(a->filsD);
+        return leftRotate(a);
+    }
+    return a;
 }
 /*extract(FILE* entre, int nbcentrale, int t){
     int cen, int t, int cap, char* typeID, char* typeIDtmp;
@@ -113,25 +182,37 @@ pArbre insertAVL(pArbre a, FILE* flux, int i){
                 nextsemicolon(fichier);
                 sort;
                 break;
-        }*/
-    }
-}
-
-
-extract(FILE* flux){
-    while(flux !=EOF){
         }
-        fgetc(flux);
-        insert(a,flux,fgetc(flux));
-
     }
+}*/
+
+
+void extract(FILE* flux,int nbcent, int type, int constype){
+    pArbre a=NULL;
+    char i=fgetc(flux);
+    
+   	do{
+    	printf("%d",i);
+    	a=insertAVL(a,flux,i);
+    	printf("%c",i);
+    	i=fgetc(flux);	
+	}while(i!=EOF);
 }
 
-int main(int argc,argv[1],char*argv[]){
-    FILE* entre=NULL;
-    FILE* sortie=NULL;
-    entre=fopen("argv[1]", "-r");
-    sort(argv[1],atoi(argv[2]),atoi(argv[3]),atoi(arg[4]));  //argv1= nom du fichier argv2=num_centrale argv3=type argv4=consomateur
+int main(int argc,char*argv[]){
+    FILE* input=NULL;
+    FILE* output=NULL;
+    input=fopen(argv[1], "r");
+    if(input==NULL){
+    printf("%s\n",argv[1]);
+    printf("pascoolbro");
+    exit(2);
+    }
+    printf("%s\n",argv[1]);
+    printf("%s\n",argv[2]);
+    printf("%s\n",argv[3]);
+    printf("%s\n",argv[4]);
+    extract(input,atoi(argv[2]),atoi(argv[3]),atoi(argv[4]));  //argv1= nom du fichier argv2=num_centrale argv3=type argv4=consomateur
     
 return 0;
 }
