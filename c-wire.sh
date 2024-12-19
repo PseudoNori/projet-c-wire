@@ -113,6 +113,7 @@ else
 	then
 	    	if [ -e fichier_shell/help.txt ] ;
 	    	then
+	    		echo time: 0.0s
 	    		cat fichier_shell/help.txt
 	    	else
 	    		echo "error: file missing -> help.txt"
@@ -120,11 +121,11 @@ else
 	    	kill $$
 	fi
 	
-##init time
+	#init time
+	time_start=$(date +%s)
 
-
-	`cp $1 tmp/tab.dat`
 	#data processing
+	`cp $1 tmp/tab.dat`
 	if (( id_centrale > -1  )) ;
 	then
 		#delete bad central lines.
@@ -139,17 +140,29 @@ else
 		`grep -E "^[0-9]+;[0-9]+;-;-;-;-;[0-9]+;-" tmp/tab.dat >> tmp/tmp.dat`
 		#comp connect withs hvb
 		`grep -E "^[0-9]+;[0-9]+;-;-;[0-9]+;-;-;[0-9]+" tmp/tab.dat >> tmp/tmp.dat`
+		`mv tmp/tmp.dat tmp/tab.dat`
+
+		#delete column
+		`more tmp/tab.dat | cut -d";" -f2,5- > tmp/tmp.dat`
+		`mv tmp/tmp.dat tmp/tab.dat`
+		
+		
 	elif [ $type_station == "hva" ] ;
 	then
 		#hva
 		`grep -E "^[0-9]+;[0-9]+;[0-9]+;-;-;-;[0-9]+;-" tmp/tab.dat >> tmp/tmp.dat`
 		#comp connect withs hva
 		`grep -E "^[0-9]+;-;[0-9]+;-;[0-9]+;-;-;[0-9]+" tmp/tab.dat >> tmp/tmp.dat`
+		`mv tmp/tmp.dat tmp/tab.dat`
+
+		#delete column
+		`more tmp/tab.dat | cut -d";" -f3,5- > tmp/tmp.dat`
+		`mv tmp/tmp.dat tmp/tab.dat`
 	elif [ $type_station == "lv" ] ;
 	then
-		#comp / indiv connect withs lv
+		#lv
 		`grep -E "^[0-9]+;-;[0-9]+;[0-9]+;-;-;[0-9]+;-" tmp/tab.dat >> tmp/tmp.dat`
-
+		#comp / indiv connect withs lv
 		if [ $consomateur_type == "all" ] || [ $consomateur_type == "comp" ] ;
 		then
 			`grep -E "^[0-9]+;-;-;[0-9]+;[0-9]+;-;-;[0-9]+" tmp/tab.dat >> tmp/tmp.dat`
@@ -158,15 +171,21 @@ else
 		then
 			`grep -E "^[0-9]+;-;-;[0-9]+;-;[0-9]+;-;[0-9]+" tmp/tab.dat >> tmp/tmp.dat`
 		fi
+		`mv tmp/tmp.dat tmp/tab.dat`
+
+		#delete column
+		`more tmp/tab.dat | cut -d";" -f4,5- > tmp/tmp.dat`
+		`mv tmp/tmp.dat tmp/tab.dat`
 	fi
+	`cat tmp/tab.dat | tr "-" "0" > tmp/tmp.dat`
 	`mv tmp/tmp.dat tmp/tab.dat`
 
-	####type_station
-	####consomateur_type
-
-	#supprimer colomnes 2/3.
+#launche C programme
 	
-
+	kill $$
 ##graphs
 ##fichier result
+	#time_end=$(date +%s)
+	#res= (( &time_end - $time_start ))
+	#echo "time: $res"
 fi
