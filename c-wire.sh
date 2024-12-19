@@ -1,5 +1,9 @@
 #!/bin/bash
 nb_args=$#
+
+#init time
+time_start=$(date +%s)
+
 if (( $# > 5 )) ;
 then
 	echo "error: too few argument"
@@ -7,7 +11,7 @@ then
 else
 	for i in $* ;
 	do
-		if [ $i == "-h" ];
+		if [ $i == "-h" ] ;
 		    	then
 		    	if [ -e fichier_shell/help.txt ] ;
 		    	then
@@ -118,12 +122,7 @@ else
 	    	fi
 	    	kill $$
 	fi
-	
-	#init time
-	time_start=$(date +%s)
 
-
-	
 	#data processing
 	if (( id_centrale <= 0  )) ;
 	then
@@ -131,7 +130,6 @@ else
 	else
 		centrale_nb=$id_centrale
 	fi
-	echo $centrale_nb
 	#delete lines based on HVB HVA LV comp indiv
 	if [ $type_station == "hvb" ] ;
 	then
@@ -171,10 +169,17 @@ else
 #		echo "error C programme"
 #	fi
 
-#fichier result	
+	#fichier result	
+##trier le fichier du C
 
+	#lv all
+#	if ( [ $type_station == "lv"  ] && [ $consomateur_type == "all" ] )
+#	then
+#		echo "sa arrive"
+#	fi
 
 ##graphs
+
 
 	time_end=$(date +%s)
 	res=$(( $time_end - $time_start ))
