@@ -77,7 +77,7 @@ else
 		rm -r tmp
 	fi
 	mkdir tmp
-	
+
 	#verif ID
 	test=`sed "1,1d" $1 | sort | tail -1 | cut -d";" -f1`
 	if (( $# == 4 )) && (( $4 <= $test )) ;
@@ -88,6 +88,7 @@ else
 		echo "error: incompatiblme Id (< $test)"
 		a=1
 	fi
+
 	#verif executable c
 #	if [ ! -e c-wire-exe ] && [ -e main.c ];
 #	then
@@ -109,7 +110,7 @@ else
 	then
 		mkdir graphs
 	fi
-	
+
 	#help
 	if (( $a == 1 )) ;
 	then
@@ -124,6 +125,12 @@ else
 	fi
 
 	#data processing
+	if [ ! -e "input/$1" ];
+	then
+		cp $1 "input/$1"
+	fi
+	
+	
 	if (( id_centrale <= 0  )) ;
 	then
 		centrale_nb="[0-9]+"
@@ -142,7 +149,6 @@ else
 		#hva
 		grep -E "^$centrale_nb;[0-9 -]+;[0-9]+;-;" $chemin_tab | cut -d";" -f3,7- > tmp/tmp.dat
 		mv tmp/tmp.dat tmp/tab.dat
-		
 	elif [ $type_station == "lv" ] ;
 	then
 		#lv
@@ -163,7 +169,7 @@ else
 	mv tmp/tmp.dat tmp/tab.dat
 
 	#launche C programme
-#	verif=`./c-wire-exe`
+#	verif=`./c-wire-exe tmp/tab.dat &type_station &consomateur_type $id_centrale`
 #	if (( $verif != 0 ))
 #	then
 #		echo "error C programme"
@@ -180,11 +186,41 @@ else
 
 ##graphs
 
-
 	time_end=$(date +%s)
 	res=$(( $time_end - $time_start ))
 	echo "time: $res"
 fi
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

@@ -6,13 +6,12 @@
 typedef struct AVLcsv{
     //int type;    // 1=HV_B 2=HV_A 3=LV
     int id; // num id
-    int capacity;
-    int consomation;
+    long double capacity;
+    long double consomation;
     struct AVLcsv* filsG;
     struct AVLcsv* filsD;
     int height;
 }AVLcsv;
-
 typedef AVLcsv* pArbre;
 
 /*void linebreak(FILE* fichier){
@@ -21,14 +20,13 @@ typedef AVLcsv* pArbre;
     }
 }
 */
+/*
 void nextsemicolon(FILE* fichier){
-    fgetc(fichier);
+    //fgetc(fichier);
     while(fgetc(fichier)!=';'){
-       // fgetc(fichier);
+       fgetc(fichier);
     }
-}
-
-
+}*/
 
 /*int extractvalue(FILE* fichier, int cap){
     fscanf(fichier, %d, cap);
@@ -42,13 +40,14 @@ int height(pArbre a){
 }
 
 pArbre addAVL(FILE* flux, pArbre a){
-    int capa, cons;
+    long double capa, cons;
     char tab[100];
-    if(fscanf(flux,"%d",&capa)==-1){
-    	printf("probleme nanana");
+
+    if(fscanf(flux,";%Lf;%Lf",&capa,&cons)==-1){
+    	printf("probleme fscanf");
     	exit(3);
     }
-    fscanf(flux,"%d", &cons);
+
     a->capacity=a->capacity + capa;
     a->consomation=a->consomation + cons;
     fgets(tab, 99,flux);
@@ -80,7 +79,6 @@ pArbre crAVL(int i){
     return a;
 }
 
-
 pArbre rightRotate(pArbre a){
     pArbre p = a->filsG;
     pArbre c = p->filsD;
@@ -92,7 +90,6 @@ pArbre rightRotate(pArbre a){
     p->height = fmax(height(p->filsG),height(p->filsD)) + 1;
     return p;
 }
-
 
 pArbre leftRotate(pArbre a){
     pArbre p = a->filsD;
@@ -111,7 +108,6 @@ int getBalance(pArbre a){
         return 0;
     return height(a->filsG) - height(a->filsD);
 }
-
 
 pArbre insertAVL(pArbre a, FILE* flux, int i){
     if(a==NULL){
@@ -188,32 +184,60 @@ pArbre insertAVL(pArbre a, FILE* flux, int i){
     }
 }*/
 
+void parcour_infixe(pArbre a, FILE* flux){
+    if(a!=NULL && a->filsD==NULL && a->filsG==NULL){
+        fprintf(flux,"%c;%.0Lf;%.0Lf\n",a->id, a->capacity, a->consomation);
+    }
+    else if((a!=NULL)){
+            parcour_infixe(a->filsG,flux);
+            fprintf(flux,"%c;%.0Lf;%.0Lf\n",a->id, a->capacity, a->consomation);
+            parcour_infixe(a->filsD,flux);
+    }
+}
 
-void extract(FILE* flux,int nbcent, int type, int constype){
+pArbre extract(FILE* flux,int nbcent, int type, int constype){
     pArbre a=NULL;
     char i=fgetc(flux);
     
    	do{
     	a=insertAVL(a,flux,i);
-    	printf("%c \n",i);
-    	i=fgetc(flux);	
+    	//printf("%c \n",i);
+    	i=fgetc(flux);
 	}while(i!=EOF);
-	printf("%c %d %d \n",a->id, a->capacity, a->consomation);
+/*
+	printf("%c %Lf %Lf \n",a->id, a->capacity, a->consomation);
+    printf("%c %Lf %Lf \n",a->filsG->id, a->filsG->capacity, a->filsG->consomation);
+	printf("%c %Lf %Lf \n",a->filsD->id, a->filsD->capacity, a->filsD->consomation);
+*/
+    return a;
 }
 
-int main(int argc,char*argv[]){
+int main(int argc,char *argv[]){
     FILE* input=NULL;
     FILE* output=NULL;
+    pArbre AVL=NULL;
+
     input=fopen(argv[1], "r");
     if(input==NULL){
-    printf("%s\n",argv[1]);
-    printf("pascoolbro");
-    exit(2);
+        printf("%s\n",argv[1]);
+        printf("error fopen");
+        exit(2);
     }
     if(argv[2]<=0){
     	exit(2);
     }
-    extract(input,atoi(argv[2]),atoi(argv[3]),atoi(argv[4]));  //argv1= nom du fichier argv2=num_centrale argv3=type argv4=consomateur
-    
+    AVL=extract(input,atoi(argv[2]),atoi(argv[3]),atoi(argv[4]));  //argv1= nom du fichier argv2=num_centrale argv3=type argv4=consomateur
+
+    output=fopen("../tmp/res_c.dat", "w");
+    if(output==NULL){
+        printf("error fopen res");
+        exit(4);
+    }
+    parcour_infixe(AVL,output);
 return 0;
 }
+/*
+nom fichier
+lire AVL
+stocker dans le fichier
+*/
