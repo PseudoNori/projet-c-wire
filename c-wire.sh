@@ -84,7 +84,6 @@ else
 		echo "error: incompatiblme Id (< $test)"
 		a=1
 	fi
-
 	#verif executable c
 #	if [ ! -e c-wire-exe ] && [ -e main.c ];
 #	then
@@ -104,8 +103,7 @@ else
 	#graphs
 	if [ ! -e graphs ];
 	then
-		a=1
-		echo "error: graphs file doesn't exist"
+		mkdir graphs
 	fi
 	
 	#help
@@ -127,26 +125,24 @@ else
 
 	
 	#data processing
-	if (( id_centrale > -1  )) ;
+	if (( id_centrale <= 0  )) ;
 	then
-		#delete bad central lines.
-	    	grep "^$id_centrale;.*;.*;.*;.*;.*;.*;.*" $chemin_tab > tmp/tmp.dat
-	    	mv tmp/tmp.dat tmp/tab.dat
-	    	chemin_tab="tmp/tab.dat"
+		centrale_nb="[0-9]+"
+	else
+		centrale_nb=$id_centrale
 	fi
-	
-	
+	echo $centrale_nb
 	#delete lines based on HVB HVA LV comp indiv
 	if [ $type_station == "hvb" ] ;
 	then
 		#hvb
-		grep -E "^[0-9]+;[0-9]+;-;-;" $chemin_tab | cut -d";" -f2,5- > tmp/tmp.dat
+		grep -E "^$centrale_nb;[0-9]+;-;-;" $chemin_tab | cut -d";" -f2,7- > tmp/tmp.dat
 		mv tmp/tmp.dat tmp/tab.dat
 		
 	elif [ $type_station == "hva" ] ;
 	then
 		#hva
-		grep -E "^[0-9]+;[0-9 -]+;[0-9]+;-;" $chemin_tab | cut -d";" -f3,5- > tmp/tmp.dat
+		grep -E "^$centrale_nb;[0-9 -]+;[0-9]+;-;" $chemin_tab | cut -d";" -f3,7- > tmp/tmp.dat
 		mv tmp/tmp.dat tmp/tab.dat
 		
 	elif [ $type_station == "lv" ] ;
@@ -155,23 +151,31 @@ else
 		#comp / indiv connect withs lv
 		if [ $consomateur_type == "all" ] ;
 		then
-			grep -E "^[0-9]+;-;[0-9 -]+;[0-9]+;" $chemin_tab | cut -d";" -f4,5- > tmp/tmp.dat
+			grep -E "^$centrale_nb;-;[0-9 -]+;[0-9]+;" $chemin_tab | cut -d";" -f4,7- > tmp/tmp.dat
 		elif [ $consomateur_type == "comp" ] ;
 		then
-			grep -E "^[0-9]+;-;[0-9 -]+;[0-9]+;" $chemin_tab | grep -E "^[0-9]+;-;[0-9 -]+;[0-9]+;[0-9 -]+;-;" $chemin_tab | cut -d";" -f4,5- > tmp/tmp.dat
+			grep -E "^$centrale_nb;-;[0-9 -]+;[0-9]+;" $chemin_tab | grep -E "^[0-9]+;-;[0-9 -]+;[0-9]+;[0-9 -]+;-;" $chemin_tab | cut -d";" -f4,7- > tmp/tmp.dat
 		elif  [ $consomateur_type == "indiv" ] ;
 		then
-			grep -E "^[0-9]+;-;[0-9 -]+;[0-9]+;" $chemin_tab | grep -E "^[0-9]+;-;[0-9 -]+;[0-9]+;-;" $chemin_tab | cut -d";" -f4,5- > tmp/tmp.dat
+			grep -E "^$centrale_nb;-;[0-9 -]+;[0-9]+;" $chemin_tab | grep -E "^[0-9]+;-;[0-9 -]+;[0-9]+;-;" $chemin_tab | cut -d";" -f4,7- > tmp/tmp.dat
 		fi
 		mv tmp/tmp.dat tmp/tab.dat
 	fi
 	cat tmp/tab.dat | tr "-" "0" > tmp/tmp.dat
 	mv tmp/tmp.dat tmp/tab.dat
 
-#launche C programme
-	
+	#launche C programme
+#	verif=`./c-wire-exe`
+#	if (( $verif != 0 ))
+#	then
+#		echo "error C programme"
+#	fi
+
+#fichier result	
+
+
 ##graphs
-##fichier result
+
 	time_end=$(date +%s)
 	res=$(( $time_end - $time_start ))
 	echo "time: $res"
