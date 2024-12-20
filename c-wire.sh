@@ -197,12 +197,11 @@ else
 		name=""
 	fi
 	
-	sort -t":" -n -k2 "tmp/res_c.csv" > output/"$type_station"_"$consomateur_type""$name".csv
+	sort -t":" -n -r -k2 "tmp/res_c.csv" | cut -d":" -f-3 > output/"$type_station"_"$consomateur_type""$name".csv
 	#lv all
 	if ([ $type_station == "lv"  ] && [ $consomateur_type == "all" ]);
 	then
-		echo "recup ligne 10+ et 10-"
-		#cat "tmp/res.c.csv" |
+		sort -t":" -n -r -k4 "tmp/res_c.csv" | cut -d":" -f-3 > output/lv_all_minmax.csv
 	fi
 
 ##graphs
