@@ -201,7 +201,8 @@ else
 	#lv all
 	if ([ $type_station == "lv"  ] && [ $consomateur_type == "all" ]);
 	then
-		sort -t":" -n -r -k4 "tmp/res_c.csv" | cut -d":" -f-3 > output/lv_all_minmax.csv
+		head output/"$type_station"_"$consomateur_type""$name".csv | sort -t":" -n -r -k4 | cut -d":" -f-3 > output/lv_all_minmax.csv
+		tail output/"$type_station"_"$consomateur_type""$name".csv | sort -t":" -n -r -k4 | cut -d":" -f-3 >> output/lv_all_minmax.csv
 	fi
 
 ##graphs
@@ -210,43 +211,3 @@ else
 	res=$(( $time_end - $time_start ))
 	echo "time: $res s"
 fi
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
