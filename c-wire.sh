@@ -139,7 +139,7 @@ else
 	else
 		centrale_nb=$id_centrale
 	fi
-	
+
 	#delete lines based on HVB HVA LV comp indiv
 	if [ $type_station == "hvb" ] ;
 	then
@@ -167,10 +167,16 @@ else
 			grep -E "^$centrale_nb;-;[0-9 -]+;[0-9]+;-;" $chemin_tab | cut -d";" -f4,7- | tr "-" "0" > tmp/tmp.dat
 		fi
 		mv tmp/tmp.dat tmp/tab.dat
-	fi
+	fi	
 
 	#launch C programme
-	./Code_C/C-Wire-exe tmp/tab.dat
+	if ([ $type_station == "lv"  ] && [ $consomateur_type == "all" ]);
+	then
+		minmax=1
+	else
+		minmax=0
+	fi
+	./Code_C/C-Wire-exe "tmp/tab.dat" $minmax
 
 	#fichier result	
 	#verif res_C
