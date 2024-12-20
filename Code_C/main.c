@@ -16,6 +16,11 @@ int main(int argc,char *argv[]){
         printf("error fopen \n");
         exit(2);
     }
+    if(ftell(input)==0){
+    	verif=0;
+    }
+    
+    
     fclose(input);
     
     input=fopen(argv[1], "r");
@@ -24,8 +29,9 @@ int main(int argc,char *argv[]){
         printf("error fopen \n");
         exit(2);
     }
-
-    AVL=extract(input);  //argv1= nom du fichier
+	if(verif){
+    	AVL=extract(input);  //argv1= nom du fichier
+    }
 	fclose(input);
 
     output=fopen("tmp/res_c.csv", "w");
