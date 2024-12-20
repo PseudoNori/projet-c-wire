@@ -4,7 +4,7 @@ int main(int argc,char *argv[]){
     FILE* input=NULL;
     FILE* output=NULL;
     pTree AVL=NULL;
-	if(argc!=2){
+	if(argc!=3){
 		printf("error wrong argument \n");
 		exit(5);
 	}
@@ -21,7 +21,7 @@ int main(int argc,char *argv[]){
         printf("error fopen res \n");
         exit(4);
     }
-    infixe_print(AVL,output);
+    infixe_print(AVL,output,argv[2]);
 return 0;
 }
 
