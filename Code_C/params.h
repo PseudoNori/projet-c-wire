@@ -34,7 +34,7 @@ pTree insertAVL(pTree a, FILE* flux, long double i);
 
 /////////////////////////////////////////////////////////////////////////////////////
 
-void infixe_print(pTree a, FILE* flux);
+void infixe_print(pTree a, FILE* flux, int test);
 
 pTree extract(FILE* flux);
 

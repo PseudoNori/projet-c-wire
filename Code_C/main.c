@@ -16,15 +16,13 @@ int main(int argc,char *argv[]){
         exit(2);
     }
     AVL=extract(input);  //argv1= nom du fichier
-	fclose(input);
+
     output=fopen("tmp/res_c.csv", "w");
     if(output==NULL){
         printf("error fopen res \n");
         exit(4);
     }
     infixe_print(AVL,output,atoi(argv[2]));
-	fclose(output);
-	free(AVL);
 return 0;
 }
 
