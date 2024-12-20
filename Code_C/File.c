@@ -5,11 +5,11 @@ void infixe_print(pTree a, FILE* flux,int test){
 //test=1 équivaut au cas lv all
 	if(test==1){
 		if(a!=NULL && a->filsD==NULL && a->filsG==NULL){
-		    fprintf(flux,"%d:%.0Lf:%.0Lf:%.0Lf\n",a->id, a->capacity, a->consomation, a->capacity - a->consomation);
+		    fprintf(flux,"%d:%.0Lf:%.0Lf:%.0Lf\n",a->id, a->capacity, a->consomation, a->consomation -  a->capacity);
 		}
 		else if((a!=NULL)){
 		        infixe_print(a->filsG,flux,test);
-		        fprintf(flux,"%d:%.0Lf:%.0Lf:%.0Lf\n",a->id, a->capacity, a->consomation,a->capacity - a->consomation);
+		        fprintf(flux,"%d:%.0Lf:%.0Lf:%.0Lf\n",a->id, a->capacity, a->consomation, a->consomation - a->capacity);
 		        infixe_print(a->filsD,flux,test);
 		}
 	}
