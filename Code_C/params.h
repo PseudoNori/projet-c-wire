@@ -4,7 +4,6 @@
 #include<math.h>
 
 typedef struct AVLcsv{
-    //int type;    // 1=HV_B 2=HV_A 3=LV
     int id; // id number
     int height; 
     struct AVLcsv* filsG;

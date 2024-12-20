@@ -3,7 +3,7 @@
 int main(int argc,char *argv[]){
     FILE* input=NULL;
     FILE* output=NULL;
-    pTree avl=NULL;
+    pArbre AVL=NULL;
 
     input=fopen(argv[1], "r");
     if(input==NULL){
@@ -11,13 +11,14 @@ int main(int argc,char *argv[]){
         printf("error fopen");
         exit(2);
     }
-    avl=extract(input);  //argv1= nom du fichier
-    output=fopen("../tmp/res_c.csv", "w");
+    AVL=extract(input);  //argv1= nom du fichier
+
+    output=fopen("../tmp/res_c.dat", "w");
     if(output==NULL){
         printf("error fopen res");
         exit(4);
     }
-    infixe_print(avl,output);
+    parcour_infixe(AVL,output);
 return 0;
 }
 

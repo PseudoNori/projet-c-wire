@@ -1,11 +1,17 @@
 #include "params.h"
 
-pTree addAVL(FILE* flux, pTree a){
+int height(pArbre a){
+    if (a == NULL)
+        return 0;
+    return a->height;
+}
+
+pArbre addAVL(FILE* flux, pArbre a){
     long double capa, cons;
     char tab[100];
 
     if(fscanf(flux,";%Lf;%Lf",&capa,&cons)==-1){
-    	printf("error fscanf");
+    	printf("probleme fscanf");
     	exit(3);
     }
 
@@ -15,13 +21,13 @@ pTree addAVL(FILE* flux, pTree a){
     return a;
 }
 
-pTree crAVL(int i){
-    pTree a;
+pArbre crAVL(long double i){
+    pArbre a;
     a=malloc(sizeof(AVLcsv));
     a->capacity=0;
     a->id=i;
     if (a->id<=0){
-    	exit(1);
+        exit(1);
     }
     a->consomation=0;
     a->filsG=NULL;
@@ -30,39 +36,37 @@ pTree crAVL(int i){
     return a;
 }
 
-int height(pTree a){
-    if (a == NULL)
-        return 0;
-    return a->height;
-}
+pArbre rightRotate(pArbre a){
+    pArbre p = a->filsG;
+    pArbre c = p->filsD;
 
-pTree rightRotate(pTree a){
-    pTree p = a->filsG;
-    pTree c = p->filsD;
     p->filsD = a;
     a->filsG = c;
+
     a->height = fmax(height(a->filsG),height(a->filsD)) + 1;
     p->height = fmax(height(p->filsG),height(p->filsD)) + 1;
     return p;
 }
 
-pTree leftRotate(pTree a){
-    pTree p = a->filsD;
-    pTree c = p->filsG;
+pArbre leftRotate(pArbre a){
+    pArbre p = a->filsD;
+    pArbre c = p->filsG;
+
     p->filsG = a;
     a->filsD = c;
+
     a->height = fmax(height(a->filsG),height(a->filsD)) + 1;
     p->height = fmax(height(p->filsG),height(p->filsD)) + 1;
     return p;
 }
 
-int getBalance(pTree a){
+int getBalance(pArbre a){
     if (a == NULL)
         return 0;
     return height(a->filsG) - height(a->filsD);
 }
 
-pTree insertAVL(pTree a, FILE* flux, int i){
+pArbre insertAVL(pArbre a, FILE* flux, long double i){
     if(a==NULL){
         a=crAVL(i);
         a=addAVL(flux, a);
@@ -82,7 +86,7 @@ pTree insertAVL(pTree a, FILE* flux, int i){
                         height(a->filsD));
 
     int balance = getBalance(a);
-	// Rotations
+
     if (balance > 1 && i < a->filsG->id){
         return rightRotate(a);
     }
