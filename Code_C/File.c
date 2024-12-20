@@ -13,11 +13,16 @@ void infixe_print(pTree a, FILE* flux){
 
 pTree extract(FILE* flux){
     pTree a=NULL;
-    char i=fgetc(flux);
+    long double i=0;
+
+    if(fscanf(flux,"%Lf",&i)==-1){
+    	printf("probleme fscanf\n");
+    	exit(3);
+    }
     
-   	do{
+   do{
     	a=insertAVL(a,flux,i);
     	i=fgetc(flux);
 	}while(i!=EOF);
-    return a;
+   return a;
 }
