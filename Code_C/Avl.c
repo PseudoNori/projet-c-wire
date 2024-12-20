@@ -1,17 +1,17 @@
 #include "params.h"
 
-int height(pArbre a){
+int height(pTree a){
     if (a == NULL)
         return 0;
     return a->height;
 }
 
-pArbre addAVL(FILE* flux, pArbre a){
+pTree addAVL(FILE* flux, pTree a){
     long double capa, cons;
     char tab[100];
 
     if(fscanf(flux,";%Lf;%Lf",&capa,&cons)==-1){
-    	printf("probleme fscanf");
+    	printf("error fscanf\n");
     	exit(3);
     }
 
@@ -21,8 +21,8 @@ pArbre addAVL(FILE* flux, pArbre a){
     return a;
 }
 
-pArbre crAVL(long double i){
-    pArbre a;
+pTree crAVL(long double i){
+    pTree a;
     a=malloc(sizeof(AVLcsv));
     a->capacity=0;
     a->id=i;
@@ -36,9 +36,9 @@ pArbre crAVL(long double i){
     return a;
 }
 
-pArbre rightRotate(pArbre a){
-    pArbre p = a->filsG;
-    pArbre c = p->filsD;
+pTree rightRotate(pTree a){
+    pTree p = a->filsG;
+    pTree c = p->filsD;
 
     p->filsD = a;
     a->filsG = c;
@@ -48,9 +48,9 @@ pArbre rightRotate(pArbre a){
     return p;
 }
 
-pArbre leftRotate(pArbre a){
-    pArbre p = a->filsD;
-    pArbre c = p->filsG;
+pTree leftRotate(pTree a){
+    pTree p = a->filsD;
+    pTree c = p->filsG;
 
     p->filsG = a;
     a->filsD = c;
@@ -60,13 +60,13 @@ pArbre leftRotate(pArbre a){
     return p;
 }
 
-int getBalance(pArbre a){
+int getBalance(pTree a){
     if (a == NULL)
         return 0;
     return height(a->filsG) - height(a->filsD);
 }
 
-pArbre insertAVL(pArbre a, FILE* flux, long double i){
+pTree insertAVL(pTree a, FILE* flux, long double i){
     if(a==NULL){
         a=crAVL(i);
         a=addAVL(flux, a);

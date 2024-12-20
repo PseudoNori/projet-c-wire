@@ -20,7 +20,7 @@ typedef AVLcsv* pTree;
 
 pTree addAVL(FILE* flux, pTree a);
 
-pTree crAVL(int i);
+pTree crAVL(long double i);
 
 int height(pTree a);
 
@@ -30,7 +30,7 @@ pTree leftRotate(pTree a);
 
 int getBalance(pTree a);
 
-pTree insertAVL(pTree a, FILE* flux, int i);
+pTree insertAVL(pTree a, FILE* flux, long double i);
 
 /////////////////////////////////////////////////////////////////////////////////////
 

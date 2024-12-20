@@ -1,18 +1,18 @@
 #include "params.h"
 
-void parcour_infixe(pArbre a, FILE* flux){
+void infixe_print(pTree a, FILE* flux){
     if(a!=NULL && a->filsD==NULL && a->filsG==NULL){
         fprintf(flux,"%.0Lf;%.0Lf;%.0Lf\n",a->id, a->capacity, a->consomation);
     }
     else if((a!=NULL)){
-            parcour_infixe(a->filsG,flux);
+            infixe_print(a->filsG,flux);
             fprintf(flux,"%.0Lf;%.0Lf;%.0Lf\n",a->id, a->capacity, a->consomation);
-            parcour_infixe(a->filsD,flux);
+            infixe_print(a->filsD,flux);
     }
 }
 
-pArbre extract(FILE* flux){
-    pArbre a=NULL;
+pTree extract(FILE* flux){
+    pTree a=NULL;
     long double i=0;
 
     if(fscanf(flux,"%Lf",&i)==-1){
