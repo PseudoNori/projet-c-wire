@@ -195,7 +195,7 @@ void parcour_infixe(pArbre a, FILE* flux){
     }
 }
 
-pArbre extract(FILE* flux,int nbcent, int type, int constype){
+pArbre extract(FILE* flux){
     pArbre a=NULL;
     long double i=0;
 
@@ -203,19 +203,13 @@ pArbre extract(FILE* flux,int nbcent, int type, int constype){
     	printf("probleme fscanf\n");
     	exit(3);
     }
-    
    	do{
     	a=insertAVL(a,flux,i);
-        //printf("%d %Lf\n",ftell(flux),i);
         if(fscanf(flux,"%Lf",&i)==-1){
             i=fgetc(flux);
         }
 	}while(i!=EOF);
-/*
-	printf("%c %Lf %Lf \n",a->id, a->capacity, a->consomation);
-    printf("%c %Lf %Lf \n",a->filsG->id, a->filsG->capacity, a->filsG->consomation);
-	printf("%c %Lf %Lf \n",a->filsD->id, a->filsD->capacity, a->filsD->consomation);
-*/
+
     return a;
 }
 
@@ -230,10 +224,7 @@ int main(int argc,char *argv[]){
         printf("error fopen");
         exit(2);
     }
-    if(argv[2]<=0){
-    	exit(2);
-    }
-    AVL=extract(input,atoi(argv[2]),atoi(argv[3]),atoi(argv[4]));  //argv1= nom du fichier argv2=num_centrale argv3=type argv4=consomateur
+    AVL=extract(input);  //argv1= nom du fichier argv2=num_centrale argv3=type argv4=consomateur
 
     output=fopen("../tmp/res_c.dat", "w");
     if(output==NULL){
