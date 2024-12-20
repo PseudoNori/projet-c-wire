@@ -8,6 +8,7 @@ int main(int argc,char *argv[]){
 		printf("error wrong argument \n");
 		exit(5);
 	}
+	
     input=fopen(argv[1], "r");
     if(input==NULL){
         printf("%s\n",argv[1]);
@@ -21,7 +22,7 @@ int main(int argc,char *argv[]){
         printf("error fopen res \n");
         exit(4);
     }
-    infixe_print(AVL,output,argv[2]);
+    infixe_print(AVL,output,atoi(argv[2]));
 return 0;
 }
 
