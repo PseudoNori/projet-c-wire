@@ -16,7 +16,7 @@ int main(int argc,char *argv[]){
     }
     AVL=extract(input);  //argv1= nom du fichier
 
-    output=fopen("../tmp/res_c.csv", "w");
+    output=fopen("tmp/res_c.csv", "w");
     if(output==NULL){
         printf("error fopen res \n");
         exit(4);
