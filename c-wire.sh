@@ -79,20 +79,16 @@ else
 	mkdir tmp
 
 	#verif executable c
-#	if [ ! -e c-wire-exe ] && [ -e main.c ];
-#	then
-#		echo "main.c compilation"
-#		`make`
-#	elif [ -e main.c ] ;
-#	then
-#		a=1
-#		echo "error: main.c doesn't exist"
-#	fi
-#	if [ ! -e c-wire-exe ];
-#	then
-#		a=1
-#		echo "error: compilation failed"
-#	fi
+	if [ ! -e Code_C/C-Wire-exe ] ;
+	then
+		echo "main.c compilation"
+		make -C Code_C
+	fi
+	if [ ! -e Code_C/C-Wire-exe ];
+	then
+		a=1
+		echo "error: compilation failed"
+	fi
 
 	#graphs
 	if [ ! -e graphs ];
@@ -105,7 +101,7 @@ else
 	then
 	    	if [ -e fichier_shell/help.txt ] ;
 	    	then
-	    		echo time: 0.0s
+	    		echo time: 0 s
 	    		cat fichier_shell/help.txt
 	    	else
 	    		echo "error: file missing -> help.txt"
@@ -155,21 +151,37 @@ else
 		mv tmp/tmp.dat tmp/tab.dat
 	fi
 
-	#launche C programme
-#	verif=`./c-wire-exe tmp/tab.dat &type_station &consomateur_type $id_centrale`
-#	if (( $verif != 0 ))
-#	then
-#		echo "error C programme"
-#	fi
+	#launch C programme
+	verif=`./"Code_C/c-wire-exe" tmp/tab.dat`
+	if (( $verif != 0 ))
+	then
+		echo "error: C programme"
+		time_end=$(date +%s)
+		res=$(( $time_end - $time_start ))
+		echo "time: $res"
+		kill $$
+	fi
 
 	#fichier result	
-##trier le fichier du C
+	#verif res_C
+	if [ ! -e "tmp/res_c.csv" ];
+	then
+		echo "error: file res_c didn't exist"
+		time_end=$(date +%s)
+		res=$(( $time_end - $time_start ))
+		echo "time: $res"
+		kill $$
+	fi
 
+##a tester
+	#tier
+	cat "tmp/res.c.csv" | sort -t":" -k2 -n > "output/$2_$3_$4.csv"
 	#lv all
-#	if ( [ $type_station == "lv"  ] && [ $consomateur_type == "all" ] )
-#	then
-#		echo "sa arrive"
-#	fi
+	if ( [ $type_station == "lv"  ] && [ $consomateur_type == "all" ] )
+	then
+		echo "recup ligne 10+ et 10-"
+		#cat "tmp/res.c.csv" |
+	fi
 
 ##graphs
 
