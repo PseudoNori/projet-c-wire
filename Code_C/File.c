@@ -17,7 +17,6 @@ pTree extract(FILE* flux){
     
    	do{
     	a=insertAVL(a,flux,i);
-    	//printf("%c \n",i);
     	i=fgetc(flux);
 	}while(i!=EOF);
     return a;
