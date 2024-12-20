@@ -1,0 +1,3 @@
+Pour faire ce projets nous avons été dans un groupe de deux, Mathéo MALLE, et Irssane LÊ.
+Nous avons commencer à travailler sur le projet de semaine avant la date de rendue, et Matheo s'est occupé du shell, pendant qu'Irssane s'est, lui, occupé de la partie C.
+Le programme réalise bien ce que la consigne demandais.
