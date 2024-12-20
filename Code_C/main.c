@@ -9,14 +9,23 @@ int main(int argc,char *argv[]){
 		exit(5);
 	}
 	
-    input=fopen(argv[1], "r");
+	int verif=1;
+	input=fopen(argv[1], "a");
     if(input==NULL){
         printf("%s\n",argv[1]);
         printf("error fopen \n");
         exit(2);
     }
-    AVL=extract(input);  //argv1= nom du fichier
+    if (ftell(input)==0){
+    	verif=0;
+    }
+	fseek(input,0,0);    
+
+    if(verif){
+        AVL=extract(input);  //argv1= nom du fichier
+    }
 	fclose(input);
+
     output=fopen("tmp/res_c.csv", "w");
     if(output==NULL){
         printf("error fopen res \n");
