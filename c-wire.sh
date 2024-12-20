@@ -152,7 +152,7 @@ else
 	fi
 
 	#launch C programme
-	verif=`./"Code_C/c-wire-exe" tmp/tab.dat`
+	verif=`./Code_C/C-Wire-exe tmp/tab.dat`
 	if (( $verif != 0 ))
 	then
 		echo "error: C programme"
