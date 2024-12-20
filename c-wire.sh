@@ -69,7 +69,13 @@ else
 	chemin_tab=$1
 	type_station=$2
 	consomateur_type=$3
-	id_centrale=-1
+
+	if (( $# == 4 )) ;
+	then
+		id_centrale=$4
+	else
+		id_centrale=-1
+	fi
 
 	#verif tmp
 	if [ -e tmp ];
@@ -96,6 +102,18 @@ else
 		mkdir graphs
 	fi
 
+	#verif outpout
+	if [ ! -e output ];
+	then
+		mkdir output
+	fi
+
+	#verif input
+	if [ ! -e input ];
+	then
+		mkdir input
+	fi
+
 	#help
 	if (( $a == 1 )) ;
 	then
@@ -114,7 +132,6 @@ else
 	then
 		cp $1 "input/$1"
 	fi
-	time_start=$(date +%s)
 	
 	if (( id_centrale <= 0  )) ;
 	then
@@ -122,6 +139,7 @@ else
 	else
 		centrale_nb=$id_centrale
 	fi
+	
 	#delete lines based on HVB HVA LV comp indiv
 	if [ $type_station == "hvb" ] ;
 	then
@@ -152,15 +170,7 @@ else
 	fi
 
 	#launch C programme
-	verif=`./Code_C/C-Wire-exe tmp/tab.dat`
-	if (( $verif != 0 ))
-	then
-		echo "error: C programme"
-		time_end=$(date +%s)
-		res=$(( $time_end - $time_start ))
-		echo "time: $res"
-		kill $$
-	fi
+	./Code_C/C-Wire-exe tmp/tab.dat
 
 	#fichier result	
 	#verif res_C
@@ -173,11 +183,17 @@ else
 		kill $$
 	fi
 
-##a tester
 	#tier
-	cat "tmp/res.c.csv" | sort -t":" -k2 -n > "output/$2_$3_$4.csv"
+	if (( $id_centrale > 0 )) ;
+	then
+		name="_$id_centrale"
+	else
+		name=""
+	fi
+	
+	sort -t":" -n -k2 "tmp/res_c.csv" > output/"$type_station"_"$consomateur_type""$name".csv
 	#lv all
-	if ( [ $type_station == "lv"  ] && [ $consomateur_type == "all" ] )
+	if ([ $type_station == "lv"  ] && [ $consomateur_type == "all" ]);
 	then
 		echo "recup ligne 10+ et 10-"
 		#cat "tmp/res.c.csv" |
@@ -187,7 +203,7 @@ else
 
 	time_end=$(date +%s)
 	res=$(( $time_end - $time_start ))
-	echo "time: $res"
+	echo "time: $res s"
 fi
 
 
