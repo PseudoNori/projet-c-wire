@@ -5,7 +5,7 @@
 #include<unistd.h>
 typedef struct AVLcsv{
     //int type;    // 1=HV_B 2=HV_A 3=LV
-    int id; // num id
+    long double id; // num id
     long double capacity;
     long double consomation;
     struct AVLcsv* filsG;
@@ -54,7 +54,7 @@ pArbre addAVL(FILE* flux, pArbre a){
     return a;
 }
 
-pArbre crAVL(int i){
+pArbre crAVL(long double i){
     pArbre a;
     a=malloc(sizeof(AVLcsv));
     a->capacity=0;
@@ -109,7 +109,7 @@ int getBalance(pArbre a){
     return height(a->filsG) - height(a->filsD);
 }
 
-pArbre insertAVL(pArbre a, FILE* flux, int i){
+pArbre insertAVL(pArbre a, FILE* flux, long double i){
     if(a==NULL){
         a=crAVL(i);
         a=addAVL(flux, a);
@@ -186,23 +186,30 @@ pArbre insertAVL(pArbre a, FILE* flux, int i){
 
 void parcour_infixe(pArbre a, FILE* flux){
     if(a!=NULL && a->filsD==NULL && a->filsG==NULL){
-        fprintf(flux,"%c;%.0Lf;%.0Lf\n",a->id, a->capacity, a->consomation);
+        fprintf(flux,"%.0Lf;%.0Lf;%.0Lf\n",a->id, a->capacity, a->consomation);
     }
     else if((a!=NULL)){
             parcour_infixe(a->filsG,flux);
-            fprintf(flux,"%c;%.0Lf;%.0Lf\n",a->id, a->capacity, a->consomation);
+            fprintf(flux,"%.0Lf;%.0Lf;%.0Lf\n",a->id, a->capacity, a->consomation);
             parcour_infixe(a->filsD,flux);
     }
 }
 
 pArbre extract(FILE* flux,int nbcent, int type, int constype){
     pArbre a=NULL;
-    char i=fgetc(flux);
+    long double i=0;
+
+    if(fscanf(flux,"%Lf",&i)==-1){
+    	printf("probleme fscanf\n");
+    	exit(3);
+    }
     
    	do{
     	a=insertAVL(a,flux,i);
-    	//printf("%c \n",i);
-    	i=fgetc(flux);
+        //printf("%d %Lf\n",ftell(flux),i);
+        if(fscanf(flux,"%Lf",&i)==-1){
+            i=fgetc(flux);
+        }
 	}while(i!=EOF);
 /*
 	printf("%c %Lf %Lf \n",a->id, a->capacity, a->consomation);
@@ -236,8 +243,3 @@ int main(int argc,char *argv[]){
     parcour_infixe(AVL,output);
 return 0;
 }
-/*
-nom fichier
-lire AVL
-stocker dans le fichier
-*/

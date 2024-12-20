@@ -60,7 +60,7 @@ else
 	fi
 
 	#verif argument combinaison
-	if ( [ $2 == "hvb" ] && ( [ $3 == "all" ] || [ $3 == "indiv" ] )) || ( [ $2 == "hva" ] && ( [ $3 = "all" ] || [ $3 == "indiv" ] )) ;
+	if ( [ $2 == "hvb" ] && ( [ $3 == "all" ] || [ $3 == "indiv" ] )) || ( [ $2 == "hva" ] && ( [ $3 = "all""../tmp/res_c.dat" ] || [ $3 == "indiv" ] )) ;
 	then
 		a=1
 		echo "error: argument combinaison, (hvb + all/ hvb + indiv / hva + all/ hva + indiv)"
@@ -77,17 +77,6 @@ else
 		rm -r tmp
 	fi
 	mkdir tmp
-
-	#verif ID
-	test=`sed "1,1d" $1 | sort | tail -1 | cut -d";" -f1`
-	if (( $# == 4 )) && (( $4 <= $test )) ;
-	then
-		id_centrale=$4
-	elif (( $# == 4 )) && (( $4 > $test )) ;
-	then
-		echo "error: incompatiblme Id (< $test)"
-		a=1
-	fi
 
 	#verif executable c
 #	if [ ! -e c-wire-exe ] && [ -e main.c ];
@@ -129,7 +118,7 @@ else
 	then
 		cp $1 "input/$1"
 	fi
-	
+	time_start=$(date +%s)
 	
 	if (( id_centrale <= 0  )) ;
 	then
@@ -141,13 +130,13 @@ else
 	if [ $type_station == "hvb" ] ;
 	then
 		#hvb
-		grep -E "^$centrale_nb;[0-9]+;-;-;" $chemin_tab | cut -d";" -f2,7- > tmp/tmp.dat
+		grep -E "^$centrale_nb;[0-9]+;-;-;" $chemin_tab | cut -d";" -f2,7- | tr "-" "0" > tmp/tmp.dat
 		mv tmp/tmp.dat tmp/tab.dat
 		
 	elif [ $type_station == "hva" ] ;
 	then
 		#hva
-		grep -E "^$centrale_nb;[0-9 -]+;[0-9]+;-;" $chemin_tab | cut -d";" -f3,7- > tmp/tmp.dat
+		grep -E "^$centrale_nb;[0-9 -]+;[0-9]+;-;" $chemin_tab | cut -d";" -f3,7- | tr "-" "0" > tmp/tmp.dat
 		mv tmp/tmp.dat tmp/tab.dat
 	elif [ $type_station == "lv" ] ;
 	then
@@ -155,18 +144,16 @@ else
 		#comp / indiv connect withs lv
 		if [ $consomateur_type == "all" ] ;
 		then
-			grep -E "^$centrale_nb;-;[0-9 -]+;[0-9]+;" $chemin_tab | cut -d";" -f4,7- > tmp/tmp.dat
+			grep -E "^$centrale_nb;-;[0-9 -]+;[0-9]+;" $chemin_tab | cut -d";" -f4,7- | tr "-" "0" > tmp/tmp.dat
 		elif [ $consomateur_type == "comp" ] ;
 		then
-			grep -E "^$centrale_nb;-;[0-9 -]+;[0-9]+;" $chemin_tab | grep -E "^[0-9]+;-;[0-9 -]+;[0-9]+;[0-9 -]+;-;" $chemin_tab | cut -d";" -f4,7- > tmp/tmp.dat
+			grep -E "^$centrale_nb;-;[0-9 -]+;[0-9]+;[0-9 -]+;-;" $chemin_tab | cut -d";" -f4,7- | tr "-" "0" > tmp/tmp.dat
 		elif  [ $consomateur_type == "indiv" ] ;
 		then
-			grep -E "^$centrale_nb;-;[0-9 -]+;[0-9]+;" $chemin_tab | grep -E "^[0-9]+;-;[0-9 -]+;[0-9]+;-;" $chemin_tab | cut -d";" -f4,7- > tmp/tmp.dat
+			grep -E "^$centrale_nb;-;[0-9 -]+;[0-9]+;-;" $chemin_tab | cut -d";" -f4,7- | tr "-" "0" > tmp/tmp.dat
 		fi
 		mv tmp/tmp.dat tmp/tab.dat
 	fi
-	cat tmp/tab.dat | tr "-" "0" > tmp/tmp.dat
-	mv tmp/tmp.dat tmp/tab.dat
 
 	#launche C programme
 #	verif=`./c-wire-exe tmp/tab.dat &type_station &consomateur_type $id_centrale`
