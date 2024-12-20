@@ -2,11 +2,11 @@
 
 void infixe_print(pTree a, FILE* flux){
     if(a!=NULL && a->filsD==NULL && a->filsG==NULL){
-        fprintf(flux,"%d;%.0Lf;%.0Lf\n",a->id, a->capacity, a->consomation);
+        fprintf(flux,"%d:%.0Lf:%.0Lf\n",a->id, a->capacity, a->consomation);
     }
     else if((a!=NULL)){
             infixe_print(a->filsG,flux);
-            fprintf(flux,"%d;%.0Lf;%.0Lf\n",a->id, a->capacity, a->consomation);
+            fprintf(flux,"%d:%.0Lf:%.0Lf\n",a->id, a->capacity, a->consomation);
             infixe_print(a->filsD,flux);
     }
 }
