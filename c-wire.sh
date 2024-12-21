@@ -201,11 +201,30 @@ else
 	#lv all
 	if ([ $type_station == "lv"  ] && [ $consomateur_type == "all" ]);
 	then
-		head output/"$type_station"_"$consomateur_type""$name".csv | sort -t":" -n -r -k4 | cut -d":" -f-3 > output/lv_all_minmax.csv
-		tail output/"$type_station"_"$consomateur_type""$name".csv | sort -t":" -n -r -k4 | cut -d":" -f-3 >> output/lv_all_minmax.csv
-	fi
+		sort -t":" -n -r -k2 "tmp/res_c.csv" | head | sort -t":" -n -r -k4 | cut -d":" -f-3 > output/lv_all_minmax.csv
+		sort -t":" -n -r -k2 "tmp/res_c.csv" | tail | sort -t":" -n -r -k4 | cut -d":" -f-3 >> output/lv_all_minmax.csv
 
-##graphs
+		#graphs minmax
+		gnuplot <<-EOF
+		set terminal png font "Times new roman"
+		set boxwidth 0.5
+		set style fill solid
+		set datafile separator ":"
+		set output "graphs/lv_all_minmax.png"
+		plot 'output/lv_all_minmax.csv' using 0:2 with boxes title "capacity" lt rgb "green", 'output/lv_all_minmax.csv' using 0:3 with boxes title "load" lt rgb "red"
+		EOF
+	fi
+	
+	#graphs
+	gnuplot <<-EOF
+	set terminal png font "Times new roman"
+	set boxwidth 0.5
+	set style fill solid
+	set datafile separator ":"
+	set output "graphs/"$type_station"_"$consomateur_type""$name".png"
+	plot 'output/"$type_station"_"$consomateur_type""$name".csv' using 0:2 with boxes title "capacity" lt rgb "green", 'output/"$type_station"_"$consomateur_type""$name".csv' using 0:3 with boxes title "load" lt rgb "red"
+	EOF
+
 
 	time_end=$(date +%s)
 	res=$(( $time_end - $time_start ))
