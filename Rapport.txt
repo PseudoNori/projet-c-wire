@@ -1,3 +1,4 @@
 Pour faire ce projets nous avons été dans un groupe de deux, Mathéo MALLE, et Irssane LÊ.
 Nous avons commencer à travailler sur le projet de semaine avant la date de rendue, et Matheo s'est occupé du shell, pendant qu'Irssane s'est, lui, occupé de la partie C.
+La partie C a été finaliser 3 jours avant la date de rendue et la partie Shell l'a été 2 jours avan,t la date de rendue.
 Le programme réalise bien ce que la consigne demandais.
