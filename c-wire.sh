@@ -7,6 +7,7 @@ time_start=$(date +%s)
 if (( $# > 5 )) ;
 then
 	echo "error: too few argument"
+	echo "time: 0 s"
 	kill $$
 else
 	for i in $* ;
@@ -19,6 +20,7 @@ else
 		    	else
 		    		echo "error: file missing -> help.txt"
 		    	fi
+				echo "time: 0 s"
 		    	kill $$
 		fi
 	done
@@ -49,7 +51,6 @@ else
 	then
 		a=1
 		echo "error: station type, (hvb hva lv)"
-		echo $2
 	fi
 
 	#verif consumer type
@@ -60,10 +61,17 @@ else
 	fi
 
 	#verif argument combinaison
-	if ( [ $2 == "hvb" ] && ( [ $3 == "all" ] || [ $3 == "indiv" ] )) || ( [ $2 == "hva" ] && ( [ $3 = "all""../tmp/res_c.dat" ] || [ $3 == "indiv" ] )) ;
+	if ( [ $2 == "hvb" ] && ( [ $3 == "all" ] || [ $3 == "indiv" ] )) || ( [ $2 == "hva" ] && ( [ $3 = "all" ] || [ $3 == "indiv" ] )) ;
 	then
 		a=1
 		echo "error: argument combinaison, (hvb + all/ hvb + indiv / hva + all/ hva + indiv)"
+	fi
+
+	#verif File format
+	verif_format=2
+	if (( $(head -$verif_format $1 | grep .*";".*";".*";".*";".*";".*";".*";".* | wc -l) < $verif_format ));
+	then
+		echo "Warning: File didn't have good format"
 	fi
 
 	chemin_tab=$1
@@ -119,11 +127,11 @@ else
 	then
 	    	if [ -e fichier_shell/help.txt ] ;
 	    	then
-	    		echo time: 0 s
 	    		cat fichier_shell/help.txt
 	    	else
 	    		echo "error: file missing -> help.txt"
 	    	fi
+			echo "time: 0 s"
 	    	kill $$
 	fi
 
@@ -197,12 +205,15 @@ else
 		name=""
 	fi
 	
-	sort -t":" -n -r -k2 "tmp/res_c.csv" | cut -d":" -f-3 > output/"$type_station"_"$consomateur_type""$name".csv
+	echo "Id_station:Capacity:Load" > output/"$type_station"_"$consomateur_type""$name".csv
+	sort -t":" -n -r -k2 "tmp/res_c.csv" | cut -d":" -f-3 >> output/"$type_station"_"$consomateur_type""$name".csv
 	#lv all
 	if ([ $type_station == "lv"  ] && [ $consomateur_type == "all" ]);
 	then
-		sort -t":" -n -r -k2 "tmp/res_c.csv" | head | sort -t":" -n -r -k4 | cut -d":" -f-3 > output/lv_all_minmax.csv
-		sort -t":" -n -r -k2 "tmp/res_c.csv" | tail | sort -t":" -n -r -k4 | cut -d":" -f-3 >> output/lv_all_minmax.csv
+		echo "Id_station:Capacity:Load" > output/lv_all_minmax.csv
+		sort -t":" -n -r -k2 "tmp/res_c.csv" | tail | sort -t":" -n -k4 | cut -d":" -f-3 >> output/lv_all_minmax.csv
+		sort -t":" -n -r -k2 "tmp/res_c.csv" | head | sort -t":" -n -k4 | cut -d":" -f-3 >> output/lv_all_minmax.csv
+
 
 		if [ $(tail -n +2 output/lv_all_minmax.csv | wc -l) != 0 ]
 		then
