@@ -29,6 +29,14 @@ else
 	then
 		a=1
 		echo "error: argument missing"
+		if [ -e fichier_shell/help.txt ] ;
+		then
+			cat fichier_shell/help.txt
+		else
+			echo "error: file missing -> help.txt"
+		fi
+		echo "time: 0 s"
+		kill $$
 	fi
 
 	##check argument
